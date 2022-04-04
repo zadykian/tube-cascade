@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>TubeCascade</AssemblyName>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)\..\.build\common.lib.props" />
+
+</Project>

@@ -1,0 +1,19 @@
+<Project>
+
+	<Import Project="$(MSBuildThisFileDirectory)\common.props" />
+
+	<PropertyGroup>
+		<PackageId>$(AssemblyName)</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<IsPackable>true</IsPackable>
+		<IsTrimmable>true</IsTrimmable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+
+</Project>

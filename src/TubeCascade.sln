@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubeCascade.Lib", "TubeCascade.Lib\TubeCascade.Lib.csproj", "{55990DC7-4A4F-4252-AC84-E12C92638917}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{6130D326-DCFB-48CB-9617-3FF0AE2FCF57}"
+	ProjectSection(SolutionItems) = preProject
+		.build\common.lib.props = .build\common.lib.props
+		.build\common.props = .build\common.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubeCascade.Tests", "TubeCascade.Tests\TubeCascade.Tests.csproj", "{EE636FC3-C9BE-4BF4-8B82-570B8B299C49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55990DC7-4A4F-4252-AC84-E12C92638917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55990DC7-4A4F-4252-AC84-E12C92638917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55990DC7-4A4F-4252-AC84-E12C92638917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55990DC7-4A4F-4252-AC84-E12C92638917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE636FC3-C9BE-4BF4-8B82-570B8B299C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE636FC3-C9BE-4BF4-8B82-570B8B299C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE636FC3-C9BE-4BF4-8B82-570B8B299C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE636FC3-C9BE-4BF4-8B82-570B8B299C49}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
