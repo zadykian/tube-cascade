@@ -1,4 +1,5 @@
 using TubeCascade.Models;
+using TubeCascade.Primitives;
 
 namespace TubeCascade.Calculation;
 
@@ -14,5 +15,13 @@ public interface ICascadeCalculator
 	/// <param name="inputData">
 	/// Input data for triode cascade calculation.
 	/// </param>
-	TriodeAmpCascade Calculate(CascadeInputData inputData);
+	TriodeAmpCascade CalculateCascade(CascadeInputData inputData);
+
+	/// <summary>
+	/// Define a dependency between input signal and output power for <paramref name="triodeAmpCascade"/>.
+	/// </summary>
+	/// <param name="triodeAmpCascade">
+	/// Signal amplifying cascade based on triode vacuum tube.
+	/// </param>
+	Func<InputSignal, Power> CalculatePower(TriodeAmpCascade triodeAmpCascade);
 }
