@@ -1,3 +1,4 @@
+using TubeCascade.ElementList;
 using TubeCascade.Primitives;
 
 namespace TubeCascade.Models;
@@ -5,7 +6,7 @@ namespace TubeCascade.Models;
 /// <summary>
 /// Resistor.
 /// </summary>
-/// <param name="Resistance">
+/// <param name="Nominal">
 /// Resistance in ohms.
 /// </param>
-public readonly record struct Resistor(Resistance Resistance);
+public readonly record struct Resistor(Resistance Nominal) : IElement<Resistance>;

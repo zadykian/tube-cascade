@@ -1,9 +1,11 @@
+using TubeCascade.ElementList;
+
 namespace TubeCascade.Primitives;
 
 /// <summary>
 /// Resistance value on ohms.
 /// </summary>
-public readonly record struct Resistance(double Value)
+public readonly record struct Resistance(double Value) : INominal
 {
 	/// <summary>
 	/// Implicit cast operator '<see cref="Resistance"/> -> <see cref="double"/>'.
