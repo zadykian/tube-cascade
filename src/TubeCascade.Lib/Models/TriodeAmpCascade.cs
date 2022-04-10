@@ -6,6 +6,11 @@ namespace TubeCascade.Models;
 public class TriodeAmpCascade
 {
 	/// <summary>
+	/// Vacuum triode tube.
+	/// </summary>
+	public VacuumTriode Tube { get; init; }
+
+	/// <summary>
 	/// Input leak resistor which is required to prevent
 	/// the accumulation of charge on the tube's control grid.
 	/// </summary>
@@ -42,10 +47,19 @@ public class TriodeAmpCascade
 	public Resistor CathodeResistor { get; init; }
 
 	/// <summary>
-	/// 
+	/// Tube's cathode shunt capacitor.
 	/// </summary>
 	/// <remarks>
 	/// Marked as CC on the circuit diagram.
 	/// </remarks>
 	public Capacitor CathodeCapacitor { get; init; }
+
+	/// <summary>
+	/// Cascade's isolation capacitor which is required to provide
+	/// galvanic isolation between cascade's output and cascade's load.
+	/// </summary>
+	/// <remarks>
+	/// Marked as IC on the circuit diagram.
+	/// </remarks>
+	public Capacitor IsolationCapacitor { get; init; }
 }
