@@ -29,28 +29,41 @@ public class CascadeCalculator : ICascadeCalculator
 	/// <inheritdoc />
 	public TriodeAmpCascade CalculateCascade(CascadeInputData inputData)
 	{
-		
-		
 		var cascadeDraft = new TriodeAmpCascade
 		{
+			Tube             = inputData.Tube,
 			LeakResistor     = new Resistor(10 * Mega),
 			SpuriousResistor = new Resistor(10 * Kilo),
 			AnodeResistor    = new Resistor(02 * inputData.Tube.InternalResistance)
 		};
 
-		var elementsWithNominalValues = cascadeElementProps
-			.Select(prop => (IElementBase)prop.GetValue(cascadeDraft)!)
-			.Select(element => element switch
+		return WithStandardValues(cascadeDraft);
+	}
+
+	/// <summary>
+	/// Set all nominal values of elements in <paramref name="cascadeDraft"/>
+	/// to standard values based on data from <see cref="ICapacitors"/> and <see cref="IResistors"/>.
+	/// </summary>
+	private TriodeAmpCascade WithStandardValues(TriodeAmpCascade cascadeDraft)
+	{
+		IElementBase WithStandardNominal(IElementBase draftValue)
+			=> draftValue switch
 			{
-				Capacitor capacitor => (IElementBase) capacitors.NearestFromAbove(capacitor.Nominal),
+				Capacitor capacitor => capacitors.NearestFromAbove(capacitor.Nominal),
 				Resistor  resistor  => resistors.NearestFromAbove(resistor.Nominal),
-				_ => throw new NotSupportedException($"Element with type '{element.GetType()}' is not supported.")
-			})
+				_ => throw new NotSupportedException($"Element with type '{draftValue.GetType()}' is not supported.")
+			};
+
+		var standardElements = cascadeElementProps
+			.Select(prop => (
+				Property: prop,
+				Element: (IElementBase)prop.GetValue(cascadeDraft)!))
+			.Select(tuple => (tuple.Property, Element: WithStandardNominal(tuple.Element)))
 			.ToImmutableArray();
 
-		var cascadeWithNominalElements = new TriodeAmpCascade();
-
-		return cascadeWithNominalElements;
+		var cascadeWithStdElements = cascadeDraft with { };
+		standardElements.ForEach(tuple => tuple.Property.SetValue(cascadeWithStdElements, tuple.Element));
+		return cascadeWithStdElements;
 	}
 
 	/// <inheritdoc />

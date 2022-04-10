@@ -4,7 +4,7 @@ using TubeCascade.Primitives;
 namespace TubeCascade.ElementList;
 
 /// <summary>
-/// List of capacitors with nominal values of capacity.
+/// List of capacitors with standard nominal values of capacity.
 /// </summary>
 public interface ICapacitors : IElementList<Capacity, Capacitor>
 {

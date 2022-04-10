@@ -3,7 +3,7 @@ namespace TubeCascade.Models;
 /// <summary>
 /// Signal amplifying cascade based on triode vacuum tube.
 /// </summary>
-public class TriodeAmpCascade
+public record TriodeAmpCascade
 {
 	/// <summary>
 	/// Vacuum triode tube.

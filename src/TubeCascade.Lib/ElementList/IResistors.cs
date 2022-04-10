@@ -4,7 +4,7 @@ using TubeCascade.Primitives;
 namespace TubeCascade.ElementList;
 
 /// <summary>
-/// List of resistors with nominal values of capacity.
+/// List of resistors with standard nominal values of capacity.
 /// </summary>
 public interface IResistors : IElementList<Resistance, Resistor>
 {

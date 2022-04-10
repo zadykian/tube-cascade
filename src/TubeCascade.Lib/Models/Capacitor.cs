@@ -7,6 +7,6 @@ namespace TubeCascade.Models;
 /// Capacitor.
 /// </summary>
 /// <param name="Nominal">
-/// Capacitor in farads.
+/// Capacity in farads.
 /// </param>
 public readonly record struct Capacitor(Capacity Nominal) : IElement<Capacity>;
