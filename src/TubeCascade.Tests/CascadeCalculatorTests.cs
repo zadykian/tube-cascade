@@ -62,6 +62,10 @@ public class CascadeCalculatorTests
 		var cascade = calculator.CalculateCascade(inputData);
 
 		Assert.AreEqual(cascade.Tube, inputData.Tube);
-		// todo
+		Assert.IsTrue(cascade.LeakResistor.Nominal.Between(new(100 * Kilo), new(10 * Mega)));
+		Assert.IsTrue(cascade.SpuriousResistor.Nominal.Between(new(1 * Kilo), new(1 * Mega)));
+		Assert.Greater(cascade.AnodeResistor.MaxVoltage, tube.NominalVoltage);
+		Assert.Greater(cascade.CathodeCapacitor.Nominal, new Capacity(5 * Micro));
+		Assert.Greater(cascade.IsolationCapacitor.Nominal, new Capacity(5 * Micro));
 	}
 }

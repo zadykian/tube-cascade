@@ -5,7 +5,7 @@ namespace TubeCascade.Primitives;
 /// <summary>
 /// Resistance value on ohms.
 /// </summary>
-public readonly record struct Resistance(double Value) : INominal
+public readonly record struct Resistance(double Value) : INominal, IComparable<Resistance>
 {
 	/// <summary>
 	/// Implicit cast operator '<see cref="Resistance"/> -> <see cref="double"/>'.
@@ -16,4 +16,7 @@ public readonly record struct Resistance(double Value) : INominal
 	/// Implicit cast operator '<see cref="double"/> -> <see cref="Resistance"/>'.
 	/// </summary>
 	public static implicit operator Resistance(double value) => new(value);
+
+	/// <inheritdoc />
+	public int CompareTo(Resistance other) => Value.CompareTo(other.Value);
 }

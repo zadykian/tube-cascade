@@ -3,7 +3,7 @@ namespace TubeCascade.Primitives;
 /// <summary>
 /// Voltage value. 
 /// </summary>
-public readonly record struct Voltage(double Value)
+public readonly record struct Voltage(double Value) : IComparable<Voltage>
 {
 	/// <summary>
 	/// Implicit cast operator '<see cref="Voltage"/> -> <see cref="double"/>'.
@@ -14,4 +14,7 @@ public readonly record struct Voltage(double Value)
 	/// Implicit cast operator '<see cref="double"/> -> <see cref="Voltage"/>'.
 	/// </summary>
 	public static implicit operator Voltage(double value) => new(value);
+
+	/// <inheritdoc />
+	public int CompareTo(Voltage other) => Value.CompareTo(other.Value);
 }

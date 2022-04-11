@@ -5,7 +5,7 @@ namespace TubeCascade.Primitives;
 /// <summary>
 /// Capacity in farads.
 /// </summary>
-public readonly record struct Capacity(double Value) : INominal
+public readonly record struct Capacity(double Value) : INominal, IComparable<Capacity>
 {
 	/// <summary>
 	/// Implicit cast operator '<see cref="Capacity"/> -> <see cref="double"/>'.
@@ -16,4 +16,7 @@ public readonly record struct Capacity(double Value) : INominal
 	/// Implicit cast operator '<see cref="double"/> -> <see cref="Capacity"/>'.
 	/// </summary>
 	public static implicit operator Capacity(double value) => new(value);
+
+	/// <inheritdoc />
+	public int CompareTo(Capacity other) => Value.CompareTo(other.Value);
 }
