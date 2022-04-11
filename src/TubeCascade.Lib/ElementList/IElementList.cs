@@ -14,14 +14,12 @@ public interface IElementList<in TNominal, TElement>
 	where TElement : IElement<TNominal>, new()
 {
 	/// <summary>
-	/// Get element which has nominal value nearest from above to <paramref name="nominal"/>.
+	/// Get element which has nominal value nearest from above to values of <paramref name="element"/>.
 	/// </summary>
-	/// <param name="element"></param>
 	TElement NearestFromAbove(TElement element);
 
 	/// <summary>
-	/// Get element which has nominal value nearest from below to <paramref name="nominal"/>.
+	/// Get element which has nominal value nearest from below to values of <paramref name="element"/>.
 	/// </summary>
-	/// <param name="element"></param>
 	TElement NearestFromBelow(TElement element);
 }

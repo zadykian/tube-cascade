@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using TubeCascade.Calculation;
+using TubeCascade.Calculation.Tube;
 using TubeCascade.ElementList;
 using TubeCascade.Models;
 using TubeCascade.Primitives;
@@ -16,15 +17,15 @@ namespace TubeCascade.Tests;
 public abstract class CalculatorTestBase
 {
 	/// <summary>
-	/// Create new instance implementing <see cref="ICascadeCalculator"/>. 
+	/// Create new instance implementing <see cref="ITubeCascadeCalculator"/>. 
 	/// </summary>
-	private protected static ICascadeCalculator Calculator()
-		=> new CascadeCalculator(IResistors.Accurate, ICapacitors.Accurate);
+	private protected static ITubeCascadeCalculator Calculator()
+		=> new TubeCascadeCalculator(IResistors.Accurate, ICapacitors.Accurate);
 
 	/// <summary>
-	/// Create new <see cref="CascadeInputData"/> value with 6N1P as triode. 
+	/// Create new <see cref="TubeCascadeInputData"/> value with 6N1P as triode. 
 	/// </summary>
-	private protected static CascadeInputData InputWith6N1P()
+	private protected static TubeCascadeInputData InputWith6N1P()
 	{
 		var tubeAnodeCharacteristics = new AnodeCharacteristic[]
 		{
@@ -48,11 +49,11 @@ public abstract class CalculatorTestBase
 			InternalResistance:   new Resistance(11 * Kilo),
 			AnodeCharacteristics: tubeAnodeCharacteristics);
 
-		var inputSignal = new InputSignal(
+		var inputSignal = new Signal(
 			VoltageAmplitude: new Voltage(2),
 			FrequencyRange:   (new Frequency(20), new Frequency(20 * Kilo)));
 
-		return new CascadeInputData(
+		return new TubeCascadeInputData(
 			InputSignal:                inputSignal,
 			Tube:                       tube,
 			NextCascadeInputResistance: new Resistance(50 * Kilo));

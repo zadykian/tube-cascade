@@ -4,29 +4,29 @@ using System.Runtime.CompilerServices;
 using TubeCascade.ElementList;
 using TubeCascade.Models;
 using TubeCascade.Primitives;
-
 using static TubeCascade.Calculation.Constants;
+
 // ReSharper disable UseDeconstruction
 // ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
 
 [assembly: InternalsVisibleTo("TubeCascade.Tests")]
 
-namespace TubeCascade.Calculation;
+namespace TubeCascade.Calculation.Tube;
 
 /// <inheritdoc />
-public class CascadeCalculator : ICascadeCalculator
+public class TubeCascadeCalculator : ITubeCascadeCalculator
 {
 	private readonly IResistors resistors;
 	private readonly ICapacitors capacitors;
 
-	public CascadeCalculator(IResistors resistors, ICapacitors capacitors)
+	public TubeCascadeCalculator(IResistors resistors, ICapacitors capacitors)
 	{
-		this.resistors  = resistors;
+		this.resistors = resistors;
 		this.capacitors = capacitors;
 	}
 
 	/// <inheritdoc />
-	public TriodeAmpCascade CalculateCascade(CascadeInputData inputData)
+	public TriodeAmpCascade CalculateCascade(TubeCascadeInputData inputData)
 	{
 		var (_, tube, _) = inputData;
 		var cascadeDraft = CascadeDraft(tube);
@@ -46,9 +46,9 @@ public class CascadeCalculator : ICascadeCalculator
 
 		return WithStandardValues(cascadeDraft with
 		{
-			AnodeResistor      = anodeResistor,
-			CathodeResistor    = cathodeResistor,
-			CathodeCapacitor   = cathodeCapacitor,
+			AnodeResistor = anodeResistor,
+			CathodeResistor = cathodeResistor,
+			CathodeCapacitor = cathodeCapacitor,
 			IsolationCapacitor = isolationCapacitor
 		});
 	}
@@ -59,8 +59,8 @@ public class CascadeCalculator : ICascadeCalculator
 	private static TriodeAmpCascade CascadeDraft(VacuumTriode tube)
 		=> new()
 		{
-			Tube             = tube,
-			LeakResistor     = new Resistor(10 * Mega, new Voltage(10), 0.5),
+			Tube = tube,
+			LeakResistor = new Resistor(10 * Mega, new Voltage(10), 0.5),
 			SpuriousResistor = new Resistor(10 * Kilo, new Voltage(10), 0.5),
 		};
 
@@ -68,13 +68,13 @@ public class CascadeCalculator : ICascadeCalculator
 	/// Calculate nominal values for capacitors.
 	/// </summary>
 	private static (Capacitor CathodeCapacitor, Capacitor IsolationCapacitor) CalculateCapacitors(
-		CascadeInputData inputData,
+		TubeCascadeInputData inputData,
 		Resistor cathodeResistor)
 	{
 		var (inputSignal, tube, nextCascadeResistance) = inputData;
 
 		var cathodeCapacity =
-			new Capacity(10 / (2 * Math.PI * inputSignal.FrequencyRange.LeftBound * cathodeResistor.Nominal)); 
+			new Capacity(10 / (2 * Math.PI * inputSignal.FrequencyRange.LeftBound * cathodeResistor.Nominal));
 		var cathodeCapacitor = new Capacitor(
 			Nominal: cathodeCapacity.Limit(new(10 * Micro), new(100 * Micro)),
 			MaxVoltage: tube.NominalVoltage);
@@ -118,7 +118,7 @@ public class CascadeCalculator : ICascadeCalculator
 		Resistor anodeResistor)
 	{
 		var (nominalVoltage, _, _) = tube;
-		var lockedTubePoint = (X: 0, Y:nominalVoltage.Value);
+		var lockedTubePoint = (X: 0, Y: nominalVoltage.Value);
 		var lockedAnodeCathodePoint = (X: nominalVoltage.Value / anodeResistor.Nominal.Value, Y: 0);
 
 		var tangent = (lockedTubePoint.Y - lockedAnodeCathodePoint.Y) / (lockedTubePoint.X - lockedAnodeCathodePoint.Y);
@@ -144,7 +144,7 @@ public class CascadeCalculator : ICascadeCalculator
 			=> draftValue switch
 			{
 				Capacitor capacitor => capacitors.NearestFromAbove(capacitor),
-				Resistor  resistor  => resistors.NearestFromAbove(resistor),
+				Resistor resistor => resistors.NearestFromAbove(resistor),
 				_ => throw new NotSupportedException($"Element with type '{draftValue.GetType()}' is not supported.")
 			};
 
@@ -161,8 +161,21 @@ public class CascadeCalculator : ICascadeCalculator
 	}
 
 	/// <inheritdoc />
-	public Func<InputSignal, Power> CalculatePower(TriodeAmpCascade triodeAmpCascade)
+	public Func<Signal, Signal> GetAmplifyingFunction(TriodeAmpCascade triodeAmpCascade)
 	{
-		throw new NotImplementedException();
+		var maxByVoltage = triodeAmpCascade
+			.Tube
+			.AnodeCharacteristics
+			.MaxBy(characteristic => characteristic.GridAnodeVoltage);
+
+		var minByVoltage = triodeAmpCascade
+			.Tube
+			.AnodeCharacteristics
+			.Where(characteristic => characteristic.GridAnodeVoltage > 0)
+			.MinBy(characteristic => characteristic.GridAnodeVoltage);
+
+		var coefficient = maxByVoltage.GridAnodeVoltage / minByVoltage.GridAnodeVoltage;
+
+		return signal => signal with { VoltageAmplitude = signal.VoltageAmplitude * coefficient };
 	}
 }

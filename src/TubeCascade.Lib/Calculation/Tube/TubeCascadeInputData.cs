@@ -1,7 +1,8 @@
+using TubeCascade.Calculation.Base;
 using TubeCascade.Models;
 using TubeCascade.Primitives;
 
-namespace TubeCascade.Calculation;
+namespace TubeCascade.Calculation.Tube;
 
 /// <summary>
 /// Input data for triode cascade calculation.
@@ -15,7 +16,7 @@ namespace TubeCascade.Calculation;
 /// <param name="NextCascadeInputResistance">
 /// Input resistance of next cascade.
 /// </param>
-public readonly record struct CascadeInputData(
-	InputSignal  InputSignal, 
+public readonly record struct TubeCascadeInputData(
+	Signal  InputSignal, 
 	VacuumTriode Tube, 
-	Resistance   NextCascadeInputResistance);
+	Resistance   NextCascadeInputResistance) : ICascadeInputData;
