@@ -132,7 +132,7 @@ public class CascadeCalculator : ICascadeCalculator
 		typeof(TriodeAmpCascade)
 			.GetProperties(BindingFlags.Public | BindingFlags.Instance)
 			.Where(prop => prop.DeclaringType!.IsAssignableTo(typeof(IElementBase)))
-			.ToArray();
+			.ToImmutableArray();
 
 	/// <summary>
 	/// Set all nominal values of elements in <paramref name="cascadeDraft"/>

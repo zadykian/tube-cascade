@@ -10,22 +10,21 @@ using static TubeCascade.Calculation.Constants;
 namespace TubeCascade.Tests;
 
 /// <summary>
-/// Cascade calculator tests.
+/// Base test fixture.
 /// </summary>
 [TestFixture]
-public class CascadeCalculatorTests
+public abstract class CalculatorTestBase
 {
 	/// <summary>
 	/// Create new instance implementing <see cref="ICascadeCalculator"/>. 
 	/// </summary>
-	private static ICascadeCalculator Calculator()
+	private protected static ICascadeCalculator Calculator()
 		=> new CascadeCalculator(IResistors.Accurate, ICapacitors.Accurate);
 
 	/// <summary>
-	/// Calculate cascade for 6N1P triode.
+	/// Create new <see cref="CascadeInputData"/> value with 6N1P as triode. 
 	/// </summary>
-	[Test]
-	public void CalculateFor6N1P()
+	private protected static CascadeInputData InputWith6N1P()
 	{
 		var tubeAnodeCharacteristics = new AnodeCharacteristic[]
 		{
@@ -53,19 +52,9 @@ public class CascadeCalculatorTests
 			VoltageAmplitude: new Voltage(2),
 			FrequencyRange:   (new Frequency(20), new Frequency(20 * Kilo)));
 
-		var inputData = new CascadeInputData(
+		return new CascadeInputData(
 			InputSignal:                inputSignal,
 			Tube:                       tube,
 			NextCascadeInputResistance: new Resistance(50 * Kilo));
-
-		var calculator = Calculator();
-		var cascade = calculator.CalculateCascade(inputData);
-
-		Assert.AreEqual(cascade.Tube, inputData.Tube);
-		Assert.IsTrue(cascade.LeakResistor.Nominal.Between(new(100 * Kilo), new(10 * Mega)));
-		Assert.IsTrue(cascade.SpuriousResistor.Nominal.Between(new(1 * Kilo), new(1 * Mega)));
-		Assert.Greater(cascade.AnodeResistor.MaxVoltage, tube.NominalVoltage);
-		Assert.Greater(cascade.CathodeCapacitor.Nominal, new Capacity(5 * Micro));
-		Assert.Greater(cascade.IsolationCapacitor.Nominal, new Capacity(5 * Micro));
 	}
 }
