@@ -6,6 +6,11 @@ namespace TubeCascade.Calculation;
 internal static class Constants
 {
 	/// <summary>
+	/// Milli - 0.001
+	/// </summary>
+	public const double Milli = 0.001;
+	
+	/// <summary>
 	/// Kilo - 1000.
 	/// </summary>
 	public const double Kilo = 1000;

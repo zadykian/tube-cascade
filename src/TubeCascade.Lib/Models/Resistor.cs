@@ -9,4 +9,13 @@ namespace TubeCascade.Models;
 /// <param name="Nominal">
 /// Resistance in ohms.
 /// </param>
-public readonly record struct Resistor(Resistance Nominal) : IElement<Resistance>;
+/// <param name="MaxVoltage">
+/// Maximum supported voltage.
+/// </param>
+/// <param name="MaxDissipatedPower">
+/// Maximum supported dissipated power.
+/// </param>
+public readonly record struct Resistor(
+	Resistance Nominal,
+	Voltage    MaxVoltage,
+	Power      MaxDissipatedPower) : IElement<Resistance>;

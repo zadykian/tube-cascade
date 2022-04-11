@@ -21,11 +21,9 @@ public interface IResistors : IElementList<Resistance, Resistor>
 	private sealed class DefaultIResistors : IResistors
 	{
 		/// <inheritdoc />
-		Resistor IElementList<Resistance, Resistor>.NearestFromAbove(Resistance nominal)
-			=> new(nominal);
+		Resistor IElementList<Resistance, Resistor>.NearestFromAbove(Resistor element) => element;
 
 		/// <inheritdoc />
-		Resistor IElementList<Resistance, Resistor>.NearestFromBelow(Resistance nominal)
-			=> new(nominal);
+		Resistor IElementList<Resistance, Resistor>.NearestFromBelow(Resistor element) => element;
 	}
 }

@@ -21,11 +21,9 @@ public interface ICapacitors : IElementList<Capacity, Capacitor>
 	private sealed class DefaultCapacitors : ICapacitors
 	{
 		/// <inheritdoc />
-		Capacitor IElementList<Capacity, Capacitor>.NearestFromAbove(Capacity nominal)
-			=> new(nominal);
+		Capacitor IElementList<Capacity, Capacitor>.NearestFromAbove(Capacitor element) => element;
 
 		/// <inheritdoc />
-		Capacitor IElementList<Capacity, Capacitor>.NearestFromBelow(Capacity nominal)
-			=> new(nominal);
+		Capacitor IElementList<Capacity, Capacitor>.NearestFromBelow(Capacitor element) => element;
 	}
 }

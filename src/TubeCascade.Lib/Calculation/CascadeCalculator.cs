@@ -1,10 +1,13 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using TubeCascade.ElementList;
 using TubeCascade.Models;
 using TubeCascade.Primitives;
 
 using static TubeCascade.Calculation.Constants;
+
+[assembly: InternalsVisibleTo("TubeCascade.Tests")]
 
 namespace TubeCascade.Calculation;
 
@@ -14,31 +17,37 @@ public class CascadeCalculator : ICascadeCalculator
 	private readonly IResistors resistors;
 	private readonly ICapacitors capacitors;
 
-	public CascadeCalculator(IResistors? resistors, ICapacitors? capacitors)
+	public CascadeCalculator(IResistors resistors, ICapacitors capacitors)
 	{
-		this.resistors  = resistors  ?? IResistors.Accurate;
-		this.capacitors = capacitors ?? ICapacitors.Accurate;
+		this.resistors  = resistors;
+		this.capacitors = capacitors;
 	}
 
+	/// <inheritdoc />
+	public TriodeAmpCascade CalculateCascade(CascadeInputData inputData)
+	{
+		var (inputSignal, tube, nextCascadeInputResistance) = inputData;
+
+		var cascadeDraft = new TriodeAmpCascade
+		{
+			Tube             = tube,
+			LeakResistor     = new Resistor(10 * Mega, new Voltage(10), 0.5),
+			SpuriousResistor = new Resistor(10 * Kilo, new Voltage(10), 0.5),
+		};
+		
+		// AnodeResistor    = new Resistor(02 * tube.InternalResistance, 1.5 * tube.NominalVoltage, todo)
+
+		return WithStandardValues(cascadeDraft);
+	}
+
+	/// <summary>
+	/// Properties of <see cref="TriodeAmpCascade"/> with type derived from <see cref="IElementBase"/>.
+	/// </summary>
 	private static readonly IReadOnlyCollection<PropertyInfo> cascadeElementProps =
 		typeof(TriodeAmpCascade)
 			.GetProperties(BindingFlags.Public | BindingFlags.Instance)
 			.Where(prop => prop.DeclaringType!.IsAssignableTo(typeof(IElementBase)))
 			.ToArray();
-
-	/// <inheritdoc />
-	public TriodeAmpCascade CalculateCascade(CascadeInputData inputData)
-	{
-		var cascadeDraft = new TriodeAmpCascade
-		{
-			Tube             = inputData.Tube,
-			LeakResistor     = new Resistor(10 * Mega),
-			SpuriousResistor = new Resistor(10 * Kilo),
-			AnodeResistor    = new Resistor(02 * inputData.Tube.InternalResistance)
-		};
-
-		return WithStandardValues(cascadeDraft);
-	}
 
 	/// <summary>
 	/// Set all nominal values of elements in <paramref name="cascadeDraft"/>
@@ -49,8 +58,8 @@ public class CascadeCalculator : ICascadeCalculator
 		IElementBase WithStandardNominal(IElementBase draftValue)
 			=> draftValue switch
 			{
-				Capacitor capacitor => capacitors.NearestFromAbove(capacitor.Nominal),
-				Resistor  resistor  => resistors.NearestFromAbove(resistor.Nominal),
+				Capacitor capacitor => capacitors.NearestFromAbove(capacitor),
+				Resistor  resistor  => resistors.NearestFromAbove(resistor),
 				_ => throw new NotSupportedException($"Element with type '{draftValue.GetType()}' is not supported.")
 			};
 

@@ -9,4 +9,9 @@ namespace TubeCascade.Models;
 /// <param name="Nominal">
 /// Capacity in farads.
 /// </param>
-public readonly record struct Capacitor(Capacity Nominal) : IElement<Capacity>;
+/// <param name="MaxVoltage">
+/// Maximum supported voltage.
+/// </param>
+public readonly record struct Capacitor(
+	Capacity Nominal,
+	Voltage  MaxVoltage) : IElement<Capacity>;

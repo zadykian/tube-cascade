@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="$(MSBuildThisFileDirectory)\..\.build\common.props"/>
+	<Import Project="$(MSBuildThisFileDirectory)\..\.build\common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0"/>
-		<PackageReference Include="NUnit" Version="3.13.2"/>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="NUnit" Version="3.13.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\TubeCascade.Lib\TubeCascade.Lib.csproj"/>
+		<ProjectReference Include="..\TubeCascade.Lib\TubeCascade.Lib.csproj" />
 	</ItemGroup>
 
 </Project>
