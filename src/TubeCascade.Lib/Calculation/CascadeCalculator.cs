@@ -6,6 +6,7 @@ using TubeCascade.Models;
 using TubeCascade.Primitives;
 
 using static TubeCascade.Calculation.Constants;
+// ReSharper disable UseDeconstruction
 
 [assembly: InternalsVisibleTo("TubeCascade.Tests")]
 
@@ -26,18 +27,82 @@ public class CascadeCalculator : ICascadeCalculator
 	/// <inheritdoc />
 	public TriodeAmpCascade CalculateCascade(CascadeInputData inputData)
 	{
-		var (inputSignal, tube, nextCascadeInputResistance) = inputData;
+		var (_, tube, _) = inputData;
+		var cascadeDraft = CascadeDraft(tube);
 
-		var cascadeDraft = new TriodeAmpCascade
+		var anodeResistorDraft = new Resistor(02 * tube.InternalResistance, 1.5 * tube.NominalVoltage, default);
+		var (tangent, constant) = BuildLoadLine(tube, anodeResistorDraft);
+
+		var tubeRestCharacteristic = tube
+			.AnodeCharacteristics
+			.Where(characteristic => characteristic.GridAnodeVoltage.Value < 0)
+			.MaxBy(characteristic => characteristic.GridAnodeVoltage);
+
+		var tubeRestPoint = (Voltage: new Voltage(), Current: new Current()); // todo
+
+		var anodeResistorPower = new Power((tube.NominalVoltage - tubeRestPoint.Voltage) * tubeRestPoint.Current);
+		var anodeResistor = anodeResistorDraft with { MaxDissipatedPower = anodeResistorPower };
+
+		var cathodeResistor = new Resistor(
+			Nominal: -1 * tubeRestPoint.Voltage,
+			MaxVoltage: tube.NominalVoltage,
+			MaxDissipatedPower: new Power(2));
+
+		var (cathodeCapacitor, isolationCapacitor) = CalculateCapacitors(inputData, cathodeResistor);
+		
+		return WithStandardValues(cascadeDraft with
+		{
+			AnodeResistor = anodeResistor,
+			CathodeResistor = cathodeResistor,
+			CathodeCapacitor = cathodeCapacitor,
+			IsolationCapacitor = isolationCapacitor
+		});
+	}
+
+	/// <summary>
+	/// Create draft of triode cascade.
+	/// </summary>
+	private static TriodeAmpCascade CascadeDraft(VacuumTriode tube)
+		=> new()
 		{
 			Tube             = tube,
 			LeakResistor     = new Resistor(10 * Mega, new Voltage(10), 0.5),
 			SpuriousResistor = new Resistor(10 * Kilo, new Voltage(10), 0.5),
 		};
-		
-		// AnodeResistor    = new Resistor(02 * tube.InternalResistance, 1.5 * tube.NominalVoltage, todo)
 
-		return WithStandardValues(cascadeDraft);
+	/// <summary>
+	/// Calculate nominal values for capacitors.
+	/// </summary>
+	private static (Capacitor CathodeCapacitor, Capacitor IsolationCapacitor) CalculateCapacitors(
+		CascadeInputData inputData,
+		Resistor cathodeResistor)
+	{
+		var (inputSignal, tube, nextCascadeResistance) = inputData;
+
+		var cathodeCapacitor = new Capacitor(
+			Nominal: new Capacity(10 / (2 * Math.PI * inputSignal.FrequencyRange.LeftBound * cathodeResistor.Nominal)),
+			MaxVoltage: tube.NominalVoltage);
+
+		var isolationCapacitor = new Capacitor(
+			Nominal: new Capacity(10 / (2 * Math.PI * inputSignal.FrequencyRange.LeftBound * nextCascadeResistance)),
+			MaxVoltage: tube.NominalVoltage);
+
+		return (CathodeCapacitor: cathodeCapacitor, IsolationCapacitor: isolationCapacitor);
+	}
+
+	/// <summary>
+	/// Build tube's load line represented as a linear equation.
+	/// </summary>
+	private static (double Tangent, double Constant) BuildLoadLine(
+		VacuumTriode tube,
+		Resistor anodeResistor)
+	{
+		var (nominalVoltage, _, _) = tube;
+		var lockedTubePoint = (X: 0, Y:nominalVoltage.Value);
+		var lockedAnodeCathodePoint = (X: nominalVoltage.Value / anodeResistor.Nominal.Value, Y: 0);
+
+		var tangent = (lockedTubePoint.Y - lockedAnodeCathodePoint.Y) / (lockedTubePoint.X - lockedAnodeCathodePoint.Y);
+		return (Tangent: tangent, Constant: lockedTubePoint.Y);
 	}
 
 	/// <summary>
