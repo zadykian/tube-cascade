@@ -178,4 +178,16 @@ public class TubeCascadeCalculator : ITubeCascadeCalculator
 
 		return signal => signal with { VoltageAmplitude = signal.VoltageAmplitude * coefficient };
 	}
+
+	/// <inheritdoc />
+	public PowerSupply CalculateRequiredPowerSupply(Voltage inputAcVoltage, TriodeAmpCascade cascade)
+	{
+		var powerUnits = new DcPowerUnit[]
+		{
+			new(cascade.Tube.NominalVoltage, 1.5 * cascade.Tube.NominalVoltage / cascade.Tube.InternalResistance),
+			new(6.3, 2) // standard values for tube's filament
+		};
+
+		return new(inputAcVoltage, powerUnits);
+	}
 }

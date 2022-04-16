@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using TubeCascade.Tests.Base;
 
 namespace TubeCascade.Tests;
 

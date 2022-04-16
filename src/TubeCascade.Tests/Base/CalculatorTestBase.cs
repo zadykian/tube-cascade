@@ -1,14 +1,12 @@
 using NUnit.Framework;
-using TubeCascade.Calculation;
 using TubeCascade.Calculation.Tube;
 using TubeCascade.ElementList;
 using TubeCascade.Models;
 using TubeCascade.Primitives;
-
 using static TubeCascade.Calculation.Constants;
 // ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
 
-namespace TubeCascade.Tests;
+namespace TubeCascade.Tests.Base;
 
 /// <summary>
 /// Base test fixture.

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using TubeCascade.Primitives;
+using TubeCascade.Tests.Base;
 using static TubeCascade.Calculation.Constants;
 
 // ReSharper disable ArrangeObjectCreationWhenTypeNotEvident

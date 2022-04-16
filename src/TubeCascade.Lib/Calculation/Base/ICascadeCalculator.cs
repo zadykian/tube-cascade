@@ -25,4 +25,15 @@ public interface ICascadeCalculator<in TInputData, TCascade>
 	/// Signal amplifying cascade.
 	/// </param>
 	Func<Signal, Signal> GetAmplifyingFunction(TCascade cascade);
+
+	/// <summary>
+	/// Determine required power supply for <paramref name="cascade"/> with <paramref name="inputAcVoltage"/>.
+	/// </summary>
+	/// <param name="inputAcVoltage">
+	/// Input AC voltage.
+	/// </param>
+	/// <param name="cascade">
+	/// Amplifying cascade.
+	/// </param>
+	PowerSupply CalculateRequiredPowerSupply(Voltage inputAcVoltage, TCascade cascade);
 }
